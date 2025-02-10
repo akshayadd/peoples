@@ -1,27 +1,24 @@
-# peoples
+# Peoples
 It's React application with Remix framework to list people with multiple emails, phone numbers and addresses.
-
-# Welcome to Remix!
-
-- 📖 [Remix docs](https://remix.run/docs)
 
 ## Development
 
 Run the dev server:
 
 ```shellscript
+npm install
 npm run dev
 ```
 
 ## Deployment
 
-First, build your app for production:
+To build your app for production:
 
 ```sh
 npm run build
 ```
 
-Then run the app in production mode:
+To run the app in production mode:
 
 ```sh
 npm start
