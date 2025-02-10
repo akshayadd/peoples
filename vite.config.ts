@@ -21,4 +21,9 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  build: {
+    minify: true,
+    sourcemap: false,
+    target: 'modules',
+  },
 });
