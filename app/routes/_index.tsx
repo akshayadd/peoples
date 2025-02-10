@@ -1,5 +1,9 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
+import fs from 'fs';
+import gracefulFs from 'graceful-fs';
+
+gracefulFs.gracefulify(fs);
 
 export const meta: MetaFunction = () => {
   return [
