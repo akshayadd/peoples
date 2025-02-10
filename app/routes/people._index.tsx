@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { AddressDetail, ContactDetail, EmailDetail, PhoneNumberDetail, User } from "~/types/people";
 
 export const loader: LoaderFunction = async () => {
-  const response = await fetch('http://localhost:3000/peoples');
+  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/peoples`);
   if (!response.ok) {
     throw new Error('Failed to fetch users');
   }
@@ -32,7 +32,7 @@ export const action: ActionFunction = async ({ request }) => {
   const userIds = formData.get("userIds")?.toString().split(",");
 
   if (intent === "delete" && userIds) {
-    const response = await fetch('http://localhost:3000/peoples/destroy_multiple', {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/peoples/destroy_multiple`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -110,7 +110,7 @@ export default function Users() {
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
 
   const deleteUser = async (userId: string) => {
-    const response = await fetch(`http://localhost:3000/peoples/${userId}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/peoples/${userId}`, {
       method: 'DELETE',
       headers: {
         "Content-Type": "application/json"
@@ -126,7 +126,7 @@ export default function Users() {
   }
 
   const restoreUser = async (userId: string) => {
-    const response = await fetch(`http://localhost:3000/peoples/${userId}/restore`, {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/peoples/${userId}/restore`, {
       method: 'POST'
     })
     if (!response.ok) {

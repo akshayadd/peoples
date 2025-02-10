@@ -77,7 +77,7 @@ export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const structuredData = parseNestedFormData(formData);
 
-  const response = await fetch('http://localhost:3000/peoples', {
+  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/peoples`, {
     method: 'POST',
     body: JSON.stringify(structuredData),
     headers: {

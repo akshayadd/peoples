@@ -73,7 +73,7 @@ function parseNestedFormData(formData: FormData): UserFormData {
 }
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const response = await fetch(`http://localhost:3000/peoples/${params.peopleId}`);
+  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/peoples/${params.peopleId}`);
   if (!response.ok) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -100,7 +100,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const formData = await request.formData();
   const structuredData = parseNestedFormData(formData);
 
-  const response = await fetch(`http://localhost:3000/peoples/${params.peopleId}`, {
+  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/peoples/${params.peopleId}`, {
     method: 'PUT',
     body: JSON.stringify(structuredData),
     headers: {
@@ -162,7 +162,7 @@ export default function EditPerson() {
   const removeContact = async (type: 'emails' | 'phones' | 'addresses', index: number) => {
     const removeType = type === 'phones' ? 'phone_numbers' : type
     const removeContactId = formData[type][index]?.id
-    const response = await fetch(`http://localhost:3000/peoples/${user.id}/${removeType}/${removeContactId}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/peoples/${user.id}/${removeType}/${removeContactId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
