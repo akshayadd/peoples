@@ -1,7 +1,7 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
-import { ChevronDown, ChevronUp, Mail, Phone, MapPin, Star, StarOff, Plus, Pencil, Trash2Icon, RefreshCcwDot } from 'lucide-react';
+import { ChevronDown, ChevronUp, Mail, Phone, MapPin, Star, StarOff, Plus, Pencil, Trash2, RefreshCcw } from 'lucide-react';
 import { userInfo } from "os";
 import React, { useState } from "react";
 import { AddressDetail, ContactDetail, EmailDetail, PhoneNumberDetail, User } from "~/types/people";
@@ -263,14 +263,14 @@ export default function Users() {
                                 onClick={() => restoreUser(user.id)}
                                 className="text-blue-600 hover:text-blue-900"
                               >
-                                <RefreshCcwDot className="h-5 w-5" />
+                                <RefreshCcw className="h-5 w-5" />
                               </button>
                             ) : (
                               <button
                                 onClick={() => deleteUser(user.id)}
                                 className="text-blue-600 hover:text-blue-900"
                               >
-                                <Trash2Icon className="h-5 w-5" />
+                                <Trash2 className="h-5 w-5" />
                               </button>
                             )}
                             <button
