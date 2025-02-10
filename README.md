@@ -1,5 +1,5 @@
 # Peoples
-It's React application with Remix framework to list people with multiple emails, phone numbers and addresses.
+It's React application with Remix framework to list people with multiple emails, phone numbers and addresses. User can be created, updated, deleted and bulk deletable. Also deleted user can be restorable but dependent recoreds will be deleted.
 
 ## Development
 

@@ -1,20 +1,26 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate, useSearchParams } from "@remix-run/react";
 import { ChevronDown, ChevronUp, Mail, Phone, MapPin, Star, StarOff, Plus, Pencil, Trash2, RefreshCcw } from 'lucide-react';
 import { userInfo } from "os";
 import React, { useState } from "react";
 import { AddressDetail, ContactDetail, EmailDetail, PhoneNumberDetail, User } from "~/types/people";
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({request}) => {
+  const url = new URL(request.url);
+  const searchParams = new URLSearchParams(url.search);
+  const query = searchParams.get('searchQuery') || null;
+
   const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/peoples`);
   if (!response.ok) {
     throw new Error('Failed to fetch users');
   }
   const Users = await response.json();
 
-  const users: User[] = Users.map((user: any) => ({
+  let users: User[] = Users.map((user: any) => ({
     id: user.id.toString(),
+    first_name: user.first_name,
+    last_name: user.last_name,
     name: user.first_name+ ' ' + user.last_name,
     date_of_birth: user.date_of_birth,
     emails: user.emails,
@@ -22,6 +28,17 @@ export const loader: LoaderFunction = async () => {
     addresses: user.addresses,
     deleted: user.deleted_at !== null ? true : false
   }));
+
+  // let users = null
+  // Filter users based on search params
+  if (query) {
+    users = users.filter((user: User) => {
+      const first = user.first_name.toLowerCase();
+      const last = user.last_name.toLowerCase();
+      const queryMatch = query !== null && (first.includes(query?.toLowerCase()) || last.includes(query?.toLowerCase()));
+      return queryMatch;
+    });
+  }
 
   return json({users})
 };
@@ -106,6 +123,7 @@ const PhoneNumbersList = ({ items, icon: Icon }: { items: PhoneNumberDetail[], i
 export default function Users() {
   const { users } = useLoaderData<{ users: User[] }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
 
@@ -165,6 +183,24 @@ export default function Users() {
     }
   };
 
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    const formData = new FormData(e.currentTarget);
+    const queryParams = formData.get('searchQuery')?.toString() || '';
+    
+    // Update search params
+    const newParams = new URLSearchParams(searchParams);
+    if (queryParams) {
+      newParams.set('searchQuery', queryParams);
+    } else {
+      newParams.delete('searchQuery');
+    }
+    setSearchParams(newParams);
+  };
+
+  const clearFilters = () => {
+    setSearchParams(new URLSearchParams());
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto">
@@ -191,6 +227,40 @@ export default function Users() {
               Add User
             </button>
           </div>
+        </div>
+
+        <div className="mb-6 bg-white rounded-lg shadow-sm p-4">
+          <form onSubmit={handleSearch} className="flex gap-4 items-end">
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Search user by name
+              </label>
+              <input
+                type="text"
+                name="searchQuery"
+                defaultValue={searchParams.get('searchQuery') || ''}
+                className="mt-2 block w-full border border-gray-300 rounded-lg shadow-sm py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-150"
+                placeholder="Search by first name or last name..."
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                className="mt-2 block px-4 py-2.5 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Search
+              </button>
+              {(searchParams.get('searchQuery')) && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="mt-2 block px-4 py-2.5 font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </form>
         </div>
 
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
